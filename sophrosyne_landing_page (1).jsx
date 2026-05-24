@@ -1,87 +1,10 @@
-import { onAuthStateChanged } from "firebase/auth";
-import React, { useEffect, useState } from "react";
-import { auth, db } from "./firebase";
-import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import React from "react";
 import { motion } from "framer-motion";
-import {
-  Leaf,
-  ScanLine,
-  Footprints,
-  Trophy,
-  BarChart3,
-  Brain,
-  Globe2,
-  Sparkles,
-  Users,
-  Building2,
-  Camera,
-  Share2,
-  MessageCircle,
-  CalendarDays,
-  Bot,
-  Car,
-  Bike,
-  Recycle,
-  Zap,
-  PlayCircle,
-  MapPin,
-} from "lucide-react";
-import { Card, CardContent } from "./components/ui/card";
-import { Button } from "./components/ui/button";
+import { Leaf, ScanLine, Footprints, Trophy, BarChart3, Brain, Globe2, Sparkles, Users, Building2, Camera, Share2, MessageCircle, CalendarDays, Bot, Car, Bike, Recycle, Zap, PlayCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function SophrosyneLandingPage() {
- const [user, setUser] = useState(null);
- const [language, setLanguage] = useState("gr");
- const [ecoScore, setEcoScore] = useState(0);
- React.useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-    setUser(currentUser);
-    if (currentUser) {
-  const userRef = doc(db, "users", currentUser.uid);
-  const userSnap = await getDoc(userRef);
-
-  if (userSnap.exists()) {
-    setEcoScore(userSnap.data().ecoScore || 0);
-  }
-}
-  });
-
-  return () => unsubscribe();
-}, []);
-
-const addEcoPoints = async (points) => {
-  const newScore = ecoScore + points;
-
-  setEcoScore(newScore);
-
-  if (user) {
-    await updateDoc(doc(db, "users", user.uid), {
-      ecoScore: newScore,
-    });
-  }
-};
-
- 
-
-  const handleGoogleLogin = async () => {
- 
- const provider = new GoogleAuthProvider();
-
-  try {
-    const result = await signInWithPopup(auth, provider);
-    setUser(result.user);
-    await setDoc(doc(db, "users", result.user.uid), {
-  name: result.user.displayName,
-  email: result.user.email,
-  photo: result.user.photoURL,
-  uid: result.user.uid,
-});
-    console.log(result.user);
-  } catch (error) {
-    console.error(error);
-  }
-}; 
   const features = [
     {
       icon: <ScanLine className="h-6 w-6" />,
@@ -106,12 +29,12 @@ const addEcoPoints = async (points) => {
     {
       icon: <Camera className="h-6 w-6" />,
       title: "Eco Stories",
-      text: "Οι χρήστες ανεβάζουν φωτογραφίες από βιώσιμες πράξεις και τις κοινοποιούν σε Instagram, Facebook ή μέσα στην κοινότητα.",
+      text: "Οι χρήστες ανεβάζουν φωτογραφίες από βιώσιμες πράξεις της καθημερινότητάς τους και τις κοινοποιούν σε Instagram, Facebook ή μέσα στην κοινότητα.",
     },
     {
       icon: <MessageCircle className="h-6 w-6" />,
       title: "Green Communities",
-      text: "Chat groups και θεματικές κοινότητες φέρνουν σε επαφή ανθρώπους, συλλόγους και ομάδες.",
+      text: "Chat groups και θεματικές κοινότητες φέρνουν σε επαφή ανθρώπους, συλλόγους και ομάδες που οργανώνουν περιβαλλοντικές δράσεις.",
     },
   ];
 
@@ -122,146 +45,8 @@ const addEcoPoints = async (points) => {
     { label: "Sustainable Choices", value: "34" },
   ];
 
-  const liveStats = [
-    { value: "12,000 kg", label: "CO₂ Saved" },
-    { value: "3,500", label: "Eco Actions" },
-    { value: "420", label: "Active Users" },
-    { value: "85", label: "Community Events" },
-  ];
-
-  const challenges = ["No Plastic Week", "Green Transport Challenge", "Recycle 10 Items"];
-
-  const testimonials = [
-    {
-      quote: "The app made me realize how many unsustainable habits I had.",
-      name: "Maria",
-      role: "Student • Athens",
-    },
-    {
-      quote: "Our university community became much more active environmentally.",
-      name: "Eco Team Athens",
-      role: "University Community",
-    },
-    {
-      quote: "The challenges and eco groups motivated me to participate in real environmental actions.",
-      name: "Alex",
-      role: "Community Member",
-    },
-  ];
-
-  const sdgs = [
-    {
-      number: "SDG 11",
-      title: "Sustainable Cities & Communities",
-      text: "Ενίσχυση βιώσιμων κοινοτήτων, green mobility και περιβαλλοντικών δράσεων στις πόλεις.",
-    },
-    {
-      number: "SDG 12",
-      title: "Responsible Consumption",
-      text: "Προώθηση υπεύθυνων καταναλωτικών επιλογών μέσω eco tracking και sustainability feedback.",
-    },
-    {
-      number: "SDG 13",
-      title: "Climate Action",
-      text: "Μείωση περιβαλλοντικού αποτυπώματος και αύξηση της κλιματικής ευαισθητοποίησης.",
-    },
-  ];
-
-  const roadmap = [
-    { year: "2026", text: "Pilot εφαρμογή σε πανεπιστήμια και τοπικές κοινότητες." },
-    { year: "2027", text: "Συνεργασίες με δήμους, οργανισμούς και sustainability partners." },
-    { year: "2028", text: "Επέκταση σε περισσότερες ευρωπαϊκές πόλεις και communities." },
-  ];
-
-  const mapPins = [
-    { top: "20%", left: "30%", label: "Beach Cleanup" },
-    { top: "45%", left: "60%", label: "Tree Planting" },
-    { top: "65%", left: "40%", label: "Recycling Hub" },
-    { top: "30%", left: "75%", label: "Green Mobility" },
-  ];
-
   return (
     <div className="min-h-screen bg-[#F7F8F3] text-[#123026]">
-      {user && (
-    <div className="flex items-center gap-4 p-4">
-      <img
-        src={user.photoURL}
-        alt="profile"
-        className="w-12 h-12 rounded-full"
-      />
-
-      <div>
-        <h2 className="font-bold text-lg">
-          {user.displayName}
-        </h2>
-
-        <p className="text-sm text-gray-500">
-          Eco Score: {ecoScore} 🌱
-        </p>
-      </div>
-  <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2">
-
-  <button
-    onClick={() => addEcoPoints(5)}
-    className="rounded-2xl bg-green-100 p-4 text-left shadow"
-  >
-    ♻️ Recycling
-    <p className="text-sm text-gray-600">
-      Reduced waste and supported material reuse.
-    </p>
-    <p className="mt-2 font-bold text-green-700">
-      +5 Eco Points
-    </p>
-  </button>
-
-  <button
-    onClick={() => addEcoPoints(15)}
-    className="rounded-2xl bg-green-100 p-4 text-left shadow"
-  >
-    🚲 Bicycle / Walking
-    <p className="text-sm text-gray-600">
-      Zero-emission transportation choice.
-    </p>
-    <p className="mt-2 font-bold text-green-700">
-      +15 Eco Points
-    </p>
-  </button>
-
-  <button
-    onClick={() => addEcoPoints(10)}
-    className="rounded-2xl bg-green-100 p-4 text-left shadow"
-  >
-    🍗 Chicken-Based Meal
-    <p className="text-sm text-gray-600">
-      Lower emissions compared to beef-based meals.
-    </p>
-    <p className="mt-2 font-bold text-green-700">
-      +10 Eco Points
-    </p>
-  </button>
-
-  <button
-    onClick={() => addEcoPoints(2)}
-    className="rounded-2xl bg-red-100 p-4 text-left shadow"
-  >
-    🥩 Beef-Based Meal
-    <p className="text-sm text-gray-600">
-      Higher carbon footprint due to methane and land use.
-    </p>
-    <p className="mt-2 font-bold text-red-700">
-      +2 Eco Points
-    </p>
-  </button>
-
-</div>
- 
-    </div>
-  )}
-  <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2">
-
-
-
-</div>
       <section className="relative overflow-hidden px-6 py-8 md:px-12 lg:px-20">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -left-40 -top-40 h-[520px] w-[520px] rounded-full bg-[#9DE0B5]/25 blur-3xl" />
@@ -287,9 +72,19 @@ const addEcoPoints = async (points) => {
               transition={{ duration: 4 + i, repeat: Infinity, ease: "easeInOut" }}
             />
           ))}
+          {[0, 1, 2, 3].map((i) => (
+            <motion.div
+              key={`leaf-${i}`}
+              className="absolute text-[#1F6B4A]/20"
+              style={{ left: `${72 + i * 6}%`, top: `${18 + i * 12}%` }}
+              animate={{ y: [0, 16, 0], rotate: [0, 10, -8, 0] }}
+              transition={{ duration: 6 + i, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Leaf className="h-8 w-8" />
+            </motion.div>
+          ))}
         </div>
-
-        <nav className="relative z-10 mx-auto flex max-w-7xl items-center justify-between">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#1F6B4A] text-white shadow-sm">
               <Leaf className="h-5 w-5" />
@@ -303,7 +98,7 @@ const addEcoPoints = async (points) => {
           <Button className="rounded-2xl bg-[#1F6B4A] px-5 text-white hover:bg-[#18573C]">Join the pilot</Button>
         </nav>
 
-        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-[#1F6B4A] shadow-sm">
               <Sparkles className="h-4 w-4" /> Digital sustainability platform
@@ -331,13 +126,17 @@ const addEcoPoints = async (points) => {
                   </div>
                   <div className="rounded-2xl bg-[#E4F3EA] p-3 text-[#1F6B4A]"><Leaf className="h-5 w-5" /></div>
                 </div>
+
                 <div className="mt-8 rounded-[2rem] bg-[#1F6B4A] p-6 text-white">
                   <p className="text-sm opacity-80">Your Eco Score</p>
                   <div className="mt-2 flex items-end gap-2">
                     <span className="text-5xl font-bold">78</span><span className="mb-2 text-lg opacity-80">/100</span>
                   </div>
-                  <div className="mt-5 h-3 rounded-full bg-white/25"><div className="h-3 w-[78%] rounded-full bg-white" /></div>
+                  <div className="mt-5 h-3 rounded-full bg-white/25">
+                    <div className="h-3 w-[78%] rounded-full bg-white" />
+                  </div>
                 </div>
+
                 <div className="mt-5 grid grid-cols-2 gap-3">
                   <Card className="rounded-3xl border-0 bg-[#F0F7F2] shadow-none">
                     <CardContent className="p-4">
@@ -354,10 +153,12 @@ const addEcoPoints = async (points) => {
                     </CardContent>
                   </Card>
                 </div>
+
                 <div className="mt-5 rounded-3xl bg-[#FFF5DE] p-4">
                   <p className="text-sm font-semibold">AI Recommendation</p>
                   <p className="mt-2 text-xs leading-5 text-[#6B5B3B]">Replace 2 car trips with public transport this week to improve your score by +6 points.</p>
                 </div>
+
                 <div className="mt-5 rounded-3xl border border-[#E8ECE8] p-4">
                   <div className="flex items-center gap-3">
                     <div className="rounded-2xl bg-[#E4F3EA] p-2 text-[#1F6B4A]"><Trophy className="h-4 w-4" /></div>
@@ -377,60 +178,10 @@ const addEcoPoints = async (points) => {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#1F6B4A]">The Problem</p>
-            <h2 className="text-3xl font-bold md:text-5xl">Οι περισσότεροι άνθρωποι θέλουν να ζουν πιο βιώσιμα, αλλά δεν έχουν έναν απλό και μετρήσιμο τρόπο να κατανοήσουν τον πραγματικό περιβαλλοντικό αντίκτυπο των καθημερινών τους επιλογών.</h2>
+            <h2 className="text-3xl font-bold md:text-5xl">Οι πολίτες θέλουν να ζουν πιο πράσινα, αλλά δεν ξέρουν πάντα πώς να το μετρήσουν.</h2>
             <p className="mt-5 text-lg leading-8 text-[#53675D]">
-              Το SOPHROSYNE μετατρέπει καθημερινές συνήθειες — όπως οι μετακινήσεις, η διατροφή, η ανακύκλωση και η κατανάλωση — σε κατανοητό environmental feedback, eco scoring και educational insights. Στόχος είναι να βοηθήσει τους χρήστες να βελτιώνουν σταδιακά τη συμπεριφορά τους μέσα από measurable sustainability actions και gamified interaction.
+              Η πληροφορία γύρω από τις βιώσιμες επιλογές είναι συχνά διάσπαρτη. Το SOPHROSYNE μετατρέπει την καθημερινή συμπεριφορά σε καθαρό feedback, ώστε ο χρήστης να βλέπει τι κάνει ήδη σωστά και πού μπορεί να βελτιωθεί.
             </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#F4F8F5] px-6 py-20 md:px-12 lg:px-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#1F6B4A]">Why SOPHROSYNE?</p>
-            <h2 className="text-3xl font-bold md:text-5xl">Η φιλοσοφία πίσω από το SOPHROSYNE.</h2>
-            <p className="mx-auto mt-6 max-w-4xl text-lg leading-8 text-[#53675D]">
-              Το όνομα SOPHROSYNE προέρχεται από την αρχαιοελληνική έννοια της σωφροσύνης: το μέτρο, την ισορροπία και τη συνειδητή επιλογή. Η εφαρμογή δεν προσπαθεί να επιβάλει έναν «τέλειο» τρόπο ζωής, αλλά να βοηθήσει τον χρήστη να κάνει μικρές, σταθερές και ρεαλιστικές αλλαγές που οδηγούν σε πραγματικό περιβαλλοντικό αντίκτυπο.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            <Card className="rounded-[2.5rem] border-0 bg-white shadow-sm">
-              <CardContent className="p-8 text-center">
-                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-[#E4F3EA] text-[#1F6B4A]">
-                  <Leaf className="h-8 w-8" />
-                </div>
-                <h3 className="text-2xl font-bold">Μέτρο</h3>
-                <p className="mt-4 leading-7 text-[#53675D]">
-                  Βιώσιμες αλλαγές χωρίς υπερβολή και πίεση. Μικρές καθημερινές κινήσεις με πραγματική αξία.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="rounded-[2.5rem] border-0 bg-white shadow-sm">
-              <CardContent className="p-8 text-center">
-                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-[#E4F3EA] text-[#1F6B4A]">
-                  <Brain className="h-8 w-8" />
-                </div>
-                <h3 className="text-2xl font-bold">Συνείδηση</h3>
-                <p className="mt-4 leading-7 text-[#53675D]">
-                  Κατανόηση του προσωπικού αποτυπώματος μέσα από δεδομένα, feedback και περιβαλλοντική ενημέρωση.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="rounded-[2.5rem] border-0 bg-white shadow-sm">
-              <CardContent className="p-8 text-center">
-                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-[#E4F3EA] text-[#1F6B4A]">
-                  <Users className="h-8 w-8" />
-                </div>
-                <h3 className="text-2xl font-bold">Δράση</h3>
-                <p className="mt-4 leading-7 text-[#53675D]">
-                  Η ατομική προσπάθεια μετατρέπεται σε συλλογική αλλαγή μέσω κοινοτήτων, challenges και δράσεων.
-                </p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>
@@ -443,7 +194,7 @@ const addEcoPoints = async (points) => {
               <h2 className="text-3xl font-bold md:text-5xl">Από καθημερινές επιλογές σε πραγματικό eco impact.</h2>
             </div>
           </div>
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {features.map((f, idx) => (
               <motion.div key={f.title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: idx * 0.08 }}>
                 <Card className="h-full rounded-[2rem] border-0 bg-white shadow-sm">
@@ -458,7 +209,6 @@ const addEcoPoints = async (points) => {
           </div>
         </div>
       </section>
-
       <section className="bg-[#F7F8F3] px-6 py-20 md:px-12 lg:px-20">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
@@ -468,6 +218,7 @@ const addEcoPoints = async (points) => {
               Ένας μικρός ψηφιακός βοηθός εμφανίζει απλές, πρακτικές προτάσεις με βάση τη συμπεριφορά του χρήστη, ώστε η βιωσιμότητα να γίνεται καθημερινή απόφαση και όχι θεωρία.
             </p>
           </div>
+
           <div className="grid gap-8 lg:grid-cols-2">
             <Card className="rounded-[2.5rem] border-0 bg-white shadow-sm">
               <CardContent className="p-7">
@@ -490,8 +241,9 @@ const addEcoPoints = async (points) => {
                 </div>
               </CardContent>
             </Card>
+
             <div className="grid gap-5 sm:grid-cols-2">
-              {liveStats.map((stat, idx) => (
+              {[{value:'12,000 kg',label:'CO₂ Saved'}, {value:'3,500',label:'Eco Actions'}, {value:'420',label:'Active Users'}, {value:'85',label:'Community Events'}].map((stat, idx) => (
                 <motion.div key={stat.label} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: idx * 0.08 }}>
                   <Card className="h-full rounded-[2rem] border-0 bg-white shadow-sm">
                     <CardContent className="p-7">
@@ -544,7 +296,7 @@ const addEcoPoints = async (points) => {
             <h2 className="text-3xl font-bold md:text-5xl">Challenges που αυξάνουν engagement και retention.</h2>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
-            {challenges.map((challenge, idx) => (
+            {['No Plastic Week', 'Green Transport Challenge', 'Recycle 10 Items'].map((challenge, idx) => (
               <motion.div key={challenge} whileHover={{ y: -8 }}>
                 <Card className="h-full rounded-[2rem] border-0 bg-white shadow-sm">
                   <CardContent className="p-7">
@@ -570,8 +322,8 @@ const addEcoPoints = async (points) => {
           <div className="relative rounded-[2.5rem] bg-white/10 p-6 backdrop-blur">
             <div className="mb-4 flex items-center gap-3"><PlayCircle className="h-8 w-8 text-[#9DE0B5]" /><span className="font-semibold">SOPHROSYNE App Flow</span></div>
             <div className="overflow-hidden rounded-[2rem] bg-white p-5 text-[#123026]">
-              <motion.div animate={{ x: ["0%", "-33.3%", "-66.6%", "0%"] }} transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }} className="flex w-[300%] gap-4">
-                {["Scan receipt", "Earn eco points", "Join local action"].map((step) => (
+              <motion.div animate={{ x: ['0%', '-33.3%', '-66.6%', '0%'] }} transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }} className="flex w-[300%] gap-4">
+                {['Scan receipt', 'Earn eco points', 'Join local action'].map((step) => (
                   <div key={step} className="w-1/3 rounded-3xl bg-[#EAF5EE] p-8 text-center">
                     <Leaf className="mx-auto mb-4 h-10 w-10 text-[#1F6B4A]" />
                     <h3 className="text-2xl font-bold">{step}</h3>
@@ -603,12 +355,13 @@ const addEcoPoints = async (points) => {
                   </div>
                   <div className="rounded-2xl bg-[#E4F3EA] p-2 text-[#1F6B4A]"><MessageCircle className="h-5 w-5" /></div>
                 </div>
+
                 <div className="mt-5 rounded-3xl bg-[#F0F7F2] p-4">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1F6B4A] text-sm font-bold text-white">AN</div>
                     <div>
                       <p className="text-sm font-semibold">Anna • EcoAthens</p>
-                      <p className="text-xs text-[#6B7D72]">Today we cleaned the local beach 🌱</p>
+                      <p className="text-xs text-[#6B7D72]">"Today we cleaned the local beach 🌱"</p>
                     </div>
                   </div>
                   <div className="mt-4 h-40 rounded-3xl bg-gradient-to-br from-[#8FD6A3] to-[#DFF5E5]" />
@@ -617,6 +370,7 @@ const addEcoPoints = async (points) => {
                     <span>🔄 Share Story</span>
                   </div>
                 </div>
+
                 <div className="mt-5 rounded-3xl border border-[#E8ECE8] p-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -625,29 +379,37 @@ const addEcoPoints = async (points) => {
                     </div>
                     <div className="rounded-xl bg-[#E4F3EA] px-3 py-1 text-xs font-semibold text-[#1F6B4A]">LIVE</div>
                   </div>
+
                   <div className="mt-4 space-y-3">
-                    <div className="rounded-2xl bg-[#F7F8F3] p-3 text-sm">🌳 Tree planting this Sunday at 11:00</div>
-                    <div className="rounded-2xl bg-[#F7F8F3] p-3 text-sm">♻️ Recycling challenge starts tomorrow</div>
-                    <div className="rounded-2xl bg-[#F7F8F3] p-3 text-sm">🚲 Who joins the green mobility week?</div>
+                    <div className="rounded-2xl bg-[#F7F8F3] p-3 text-sm">
+                      🌳 Tree planting this Sunday at 11:00
+                    </div>
+                    <div className="rounded-2xl bg-[#F7F8F3] p-3 text-sm">
+                      ♻️ Recycling challenge starts tomorrow
+                    </div>
+                    <div className="rounded-2xl bg-[#F7F8F3] p-3 text-sm">
+                      🚲 Who joins the green mobility week?
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+
             <div className="grid gap-5 sm:grid-cols-2">
               <Card className="rounded-[2rem] border-0 bg-[#F0F7F2] shadow-sm">
-                <CardContent className="p-6">
-                  <Share2 className="mb-4 h-8 w-8 text-[#1F6B4A]" />
-                  <h3 className="text-xl font-bold">Shareable Impact</h3>
-                  <p className="mt-3 leading-7 text-[#53675D]">Ο χρήστης κοινοποιεί επιτεύγματα και βιώσιμες πράξεις σε social media, ενισχύοντας το word-of-mouth.</p>
-                </CardContent>
-              </Card>
-              <Card className="rounded-[2rem] border-0 bg-[#F0F7F2] shadow-sm">
-                <CardContent className="p-6">
-                  <CalendarDays className="mb-4 h-8 w-8 text-[#1F6B4A]" />
-                  <h3 className="text-xl font-bold">Local Eco Events</h3>
-                  <p className="mt-3 leading-7 text-[#53675D]">Κοινότητες, σύλλογοι και ομάδες οργανώνουν δράσεις και προσκαλούν χρήστες να συμμετάσχουν.</p>
-                </CardContent>
-              </Card>
+              <CardContent className="p-6">
+                <Share2 className="mb-4 h-8 w-8 text-[#1F6B4A]" />
+                <h3 className="text-xl font-bold">Shareable Impact</h3>
+                <p className="mt-3 leading-7 text-[#53675D]">Ο χρήστης κοινοποιεί επιτεύγματα και βιώσιμες πράξεις σε social media, ενισχύοντας το word-of-mouth.</p>
+              </CardContent>
+            </Card>
+            <Card className="rounded-[2rem] border-0 bg-[#F0F7F2] shadow-sm">
+              <CardContent className="p-6">
+                <CalendarDays className="mb-4 h-8 w-8 text-[#1F6B4A]" />
+                <h3 className="text-xl font-bold">Local Eco Events</h3>
+                <p className="mt-3 leading-7 text-[#53675D]">Κοινότητες, σύλλογοι και ομάδες οργανώνουν δράσεις και προσκαλούν χρήστες να συμμετάσχουν.</p>
+              </CardContent>
+            </Card>
             </div>
           </div>
         </div>
@@ -662,53 +424,76 @@ const addEcoPoints = async (points) => {
               Οι χρήστες μπορούν να ανακαλύπτουν eco δράσεις, περιβαλλοντικές ομάδες και βιώσιμα events κοντά τους μέσα από έναν διαδραστικό χάρτη της κοινότητας.
             </p>
           </div>
+
           <div className="grid gap-8 lg:grid-cols-2">
             <div className="relative overflow-hidden rounded-[2.5rem] bg-[#123026] p-6 text-white shadow-2xl">
               <div className="absolute inset-0 opacity-20">
                 <div className="absolute left-0 top-0 h-full w-full bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.18)_1px,transparent_1px)] bg-[size:32px_32px]" />
               </div>
+
               <div className="relative z-10">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-white/60">Athens Eco Map</p>
                     <h3 className="text-2xl font-bold">Live Sustainability Activities</h3>
                   </div>
-                  <div className="rounded-2xl bg-white/10 p-3"><Globe2 className="h-6 w-6 text-[#9DE0B5]" /></div>
+                  <div className="rounded-2xl bg-white/10 p-3">
+                    <Globe2 className="h-6 w-6 text-[#9DE0B5]" />
+                  </div>
                 </div>
+
                 <div className="relative mt-8 h-[360px] overflow-hidden rounded-[2rem] bg-[#1B4735]">
                   <div className="absolute inset-0 opacity-20">
                     <div className="h-full w-full bg-[linear-gradient(rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.12)_1px,transparent_1px)] bg-[size:40px_40px]" />
                   </div>
-                  {mapPins.map((pin, idx) => (
-                    <motion.div key={pin.label} className="absolute" style={{ top: pin.top, left: pin.left }} animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 2 + idx, repeat: Infinity }}>
+
+                  {[{ top: '20%', left: '30%', label: 'Beach Cleanup' }, { top: '45%', left: '60%', label: 'Tree Planting' }, { top: '65%', left: '40%', label: 'Recycling Hub' }, { top: '30%', left: '75%', label: 'Green Mobility' }].map((pin, idx) => (
+                    <motion.div
+                      key={idx}
+                      className="absolute"
+                      style={{ top: pin.top, left: pin.left }}
+                      animate={{ scale: [1, 1.15, 1] }}
+                      transition={{ duration: 2 + idx, repeat: Infinity }}
+                    >
                       <div className="flex flex-col items-center">
                         <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#9DE0B5] shadow-lg shadow-[#9DE0B5]/40">
                           <div className="h-2 w-2 rounded-full bg-[#123026]" />
                         </div>
-                        <div className="mt-2 rounded-full bg-white/10 px-3 py-1 text-xs backdrop-blur">{pin.label}</div>
+                        <div className="mt-2 rounded-full bg-white/10 px-3 py-1 text-xs backdrop-blur">
+                          {pin.label}
+                        </div>
                       </div>
                     </motion.div>
                   ))}
                 </div>
               </div>
             </div>
+
             <div className="space-y-5">
               <Card className="rounded-[2rem] border-0 bg-white shadow-sm">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold">🌱 Local Environmental Actions</h3>
-                  <p className="mt-3 leading-7 text-[#53675D]">Οι χρήστες μπορούν να βρίσκουν nearby cleanups, tree planting δράσεις, recycling points και community eco events.</p>
+                  <p className="mt-3 leading-7 text-[#53675D]">
+                    Οι χρήστες μπορούν να βρίσκουν nearby cleanups, tree planting δράσεις, recycling points και community eco events.
+                  </p>
                 </CardContent>
               </Card>
+
               <Card className="rounded-[2rem] border-0 bg-white shadow-sm">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold">🤝 Communities & Eco Teams</h3>
-                  <p className="mt-3 leading-7 text-[#53675D]">Σύλλογοι, ΜΚΟ και φοιτητικές ομάδες μπορούν να δημιουργούν communities και να φέρνουν τους πολίτες σε επαφή.</p>
+                  <p className="mt-3 leading-7 text-[#53675D]">
+                    Σύλλογοι, ΜΚΟ και φοιτητικές ομάδες μπορούν να δημιουργούν communities και να φέρνουν τους πολίτες σε επαφή.
+                  </p>
                 </CardContent>
               </Card>
+
               <Card className="rounded-[2rem] border-0 bg-white shadow-sm">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold">📍 Real-world Sustainability</h3>
-                  <p className="mt-3 leading-7 text-[#53675D]">Το SOPHROSYNE συνδέει τον ψηφιακό κόσμο με πραγματικές δράσεις, μετατρέποντας την περιβαλλοντική ευαισθητοποίηση σε φυσική συμμετοχή.</p>
+                  <p className="mt-3 leading-7 text-[#53675D]">
+                    Το SOPHROSYNE συνδέει τον ψηφιακό κόσμο με πραγματικές δράσεις, μετατρέποντας την περιβαλλοντική ευαισθητοποίηση σε φυσική συμμετοχή.
+                  </p>
                 </CardContent>
               </Card>
             </div>
@@ -721,7 +506,9 @@ const addEcoPoints = async (points) => {
           <div>
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#9DE0B5]">Live Impact Dashboard</p>
             <h2 className="text-3xl font-bold md:text-5xl">Μετρήσιμη πρόοδος για χρήστες, δήμους και οργανισμούς.</h2>
-            <p className="mt-5 text-lg leading-8 text-white/75">Το dashboard δείχνει σε πραγματικό χρόνο βασικούς δείκτες όπως eco-score, CO₂ εξοικονόμηση, πράσινες μετακινήσεις και βιώσιμες επιλογές. Οι οργανισμοί μπορούν να παρακολουθούν συνολική συμμετοχή με ανώνυμα δεδομένα.</p>
+            <p className="mt-5 text-lg leading-8 text-white/75">
+              Το dashboard δείχνει σε πραγματικό χρόνο βασικούς δείκτες όπως eco-score, CO₂ εξοικονόμηση, πράσινες μετακινήσεις και βιώσιμες επιλογές. Οι οργανισμοί μπορούν να παρακολουθούν συνολική συμμετοχή με ανώνυμα δεδομένα.
+            </p>
           </div>
           <Card className="rounded-[2rem] border-0 bg-white/10 text-white backdrop-blur">
             <CardContent className="p-6">
@@ -750,193 +537,27 @@ const addEcoPoints = async (points) => {
       <section className="px-6 py-20 md:px-12 lg:px-20">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-6 lg:grid-cols-3">
-            <Card className="rounded-[2rem] border-0 bg-white shadow-sm">
+            <Card className="rounded-[2rem] border-0 bg-white shadow-sm lg:col-span-1">
               <CardContent className="p-7">
                 <Users className="mb-4 h-8 w-8 text-[#1F6B4A]" />
                 <h3 className="text-xl font-bold">For Citizens</h3>
                 <p className="mt-3 leading-7 text-[#53675D]">Προσωπικό eco-score, προτάσεις και ανταμοιβές για καθημερινές βιώσιμες επιλογές.</p>
               </CardContent>
             </Card>
-            <Card className="rounded-[2rem] border-0 bg-white shadow-sm">
+            <Card className="rounded-[2rem] border-0 bg-white shadow-sm lg:col-span-1">
               <CardContent className="p-7">
                 <Building2 className="mb-4 h-8 w-8 text-[#1F6B4A]" />
                 <h3 className="text-xl font-bold">For Cities & Institutions</h3>
                 <p className="mt-3 leading-7 text-[#53675D]">Green challenges, συμμετοχικά προγράμματα και ανώνυμα sustainability reports.</p>
               </CardContent>
             </Card>
-            <Card className="rounded-[2rem] border-0 bg-white shadow-sm">
+            <Card className="rounded-[2rem] border-0 bg-white shadow-sm lg:col-span-1">
               <CardContent className="p-7">
                 <Globe2 className="mb-4 h-8 w-8 text-[#1F6B4A]" />
                 <h3 className="text-xl font-bold">For Brands</h3>
                 <p className="mt-3 leading-7 text-[#53675D]">Συνεργασίες ανταμοιβών, visibility για βιώσιμα προϊόντα και υπεύθυνες καμπάνιες.</p>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#F7F8F3] px-6 py-20 md:px-12 lg:px-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#1F6B4A]">Community Voices</p>
-            <h2 className="text-3xl font-bold md:text-5xl">People experiencing SOPHROSYNE</h2>
-            <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-[#53675D]">Το SOPHROSYNE δημιουργεί πραγματική περιβαλλοντική συμμετοχή και φέρνει τις κοινότητες πιο κοντά μέσα από κοινές βιώσιμες δράσεις.</p>
-          </div>
-          <div className="grid gap-6 lg:grid-cols-3">
-            {testimonials.map((t, idx) => (
-              <motion.div key={t.name} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: idx * 0.1 }}>
-                <Card className="h-full rounded-[2.5rem] border-0 bg-white shadow-sm">
-                  <CardContent className="flex h-full flex-col p-8">
-                    <div className="mb-6 text-5xl leading-none text-[#1F6B4A]/20">“</div>
-                    <p className="flex-1 text-lg leading-8 text-[#2E473C]">{t.quote}</p>
-                    <div className="mt-8 flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E4F3EA] font-bold text-[#1F6B4A]">{t.name.charAt(0)}</div>
-                      <div>
-                        <p className="font-semibold">{t.name}</p>
-                        <p className="text-sm text-[#6B7D72]">{t.role}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#EAF5EE] px-6 py-20 md:px-12 lg:px-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#1F6B4A]">ESG • Sustainability • Impact</p>
-            <h2 className="text-3xl font-bold md:text-5xl">Why SOPHROSYNE Matters</h2>
-            <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-[#53675D]">Το SOPHROSYNE συνδυάζει sustainability awareness, behavioral feedback και gamification ώστε να βοηθήσει άτομα, κοινότητες και οργανισμούς να κατανοούν και να βελτιώνουν σταδιακά το περιβαλλοντικό τους αποτύπωμα μέσα από measurable sustainability actions.</p>
-          </div>
-          <div className="grid gap-6 lg:grid-cols-3">
-            {sdgs.map((sdg, idx) => (
-              <motion.div key={sdg.number} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: idx * 0.1 }}>
-                <Card className="h-full rounded-[2.5rem] border-0 bg-white shadow-sm">
-                  <CardContent className="p-8">
-                    <div className="mb-5 inline-flex rounded-2xl bg-[#1F6B4A] px-4 py-2 text-sm font-bold text-white">{sdg.number}</div>
-                    <h3 className="text-2xl font-bold leading-tight">{sdg.title}</h3>
-                    <p className="mt-5 leading-7 text-[#53675D]">{sdg.text}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-          <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-4">
-
-  <div className="rounded-3xl bg-white p-8 shadow-sm text-center">
-    <h3 className="text-4xl font-bold text-[#1F6B4A]">
-      12K+
-    </h3>
-
-    <p className="mt-4 text-[#53675D]">
-      Eco Actions Completed
-    </p>
-  </div>
-
-  <div className="rounded-3xl bg-white p-8 shadow-sm text-center">
-    <h3 className="text-4xl font-bold text-[#1F6B4A]">
-      4.8t
-    </h3>
-
-    <p className="mt-4 text-[#53675D]">
-      Estimated CO₂ Impact Awareness
-    </p>
-  </div>
-
-  <div className="rounded-3xl bg-white p-8 shadow-sm text-center">
-    <h3 className="text-4xl font-bold text-[#1F6B4A]">
-      2.1K
-    </h3>
-
-    <p className="mt-4 text-[#53675D]">
-      Sustainable Choices Logged
-    </p>
-  </div>
-
-  <div className="rounded-3xl bg-white p-8 shadow-sm text-center">
-    <h3 className="text-4xl font-bold text-[#1F6B4A]">
-      ESG
-    </h3>
-
-    <p className="mt-4 text-[#53675D]">
-      Behavioral Sustainability Platform
-    </p>
-  </div>
-
-</div>
-<div className="mt-20">
-  <div className="max-w-3xl">
-    <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#1F6B4A]">
-      Potential Applications
-    </p>
-
-    <h2 className="text-3xl font-bold md:text-5xl">
-      A scalable sustainability platform for people, organizations and communities.
-    </h2>
-
-    <p className="mt-6 text-lg leading-8 text-[#53675D]">
-      SOPHROSYNE is designed not only for individuals, but also for organizations,
-      universities and local communities that aim to encourage measurable sustainability participation
-      and behavioral environmental awareness.
-    </p>
-  </div>
-
-  <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
-
-    <div className="rounded-3xl bg-white p-8 shadow-sm">
-      <h3 className="text-2xl font-bold">
-        👤 Individuals
-      </h3>
-
-      <p className="mt-4 leading-7 text-[#53675D]">
-        Eco scoring, sustainable habit tracking, transportation awareness,
-        food footprint education and gamified environmental interaction.
-      </p>
-    </div>
-
-    <div className="rounded-3xl bg-white p-8 shadow-sm">
-      <h3 className="text-2xl font-bold">
-        🏢 Organizations
-      </h3>
-
-      <p className="mt-4 leading-7 text-[#53675D]">
-        Employee sustainability engagement, ESG participation programs,
-        workplace challenges and environmental awareness initiatives.
-      </p>
-    </div>
-
-    <div className="rounded-3xl bg-white p-8 shadow-sm">
-      <h3 className="text-2xl font-bold">
-        🏙️ Communities
-      </h3>
-
-      <p className="mt-4 leading-7 text-[#53675D]">
-        Citizen participation campaigns, recycling initiatives,
-        green mobility actions and local sustainability programs.
-      </p>
-    </div>
-
-  </div>
-</div>
-          <div className="mt-16 rounded-[2.5rem] bg-[#123026] p-10 text-white shadow-2xl">
-            <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
-              <div>
-                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#9DE0B5]">Future Roadmap</p>
-                <h2 className="text-3xl font-bold md:text-5xl">The future vision of SOPHROSYNE</h2>
-                <p className="mt-5 text-lg leading-8 text-white/75">Στόχος του SOPHROSYNE είναι να εξελιχθεί από μια sustainability εφαρμογή σε ένα ολοκληρωμένο οικοσύστημα περιβαλλοντικής συμμετοχής και συλλογικής δράσης.</p>
-              </div>
-              <div className="space-y-5">
-                {roadmap.map((item) => (
-                  <div key={item.year} className="flex gap-5 rounded-3xl bg-white/10 p-5 backdrop-blur">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#9DE0B5] font-bold text-[#123026]">{item.year}</div>
-                    <p className="leading-7 text-white/85">{item.text}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -949,34 +570,7 @@ const addEcoPoints = async (points) => {
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-[#53675D]">
             Το SOPHROSYNE εμπνέεται από την έννοια της σωφροσύνης: την ισορροπία ανάμεσα στον άνθρωπο, την τεχνολογία και το περιβάλλον. Κάθε μικρή επιλογή μπορεί να γίνει μέρος μιας μεγαλύτερης αλλαγής.
           </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button 
-            onClick={handleGoogleLogin}
-            className="rounded-2xl bg-[#1F6B4A] px-8 py-6 text-base text-white hover:bg-[#18573C]"
-            > 
-            Join the Movement
-            </Button>
-            <Button variant="outline" className="rounded-2xl border-[#1F6B4A]/30 px-8 py-6 text-base">Download App
-            </Button>
-            <div className="flex gap-2">
-  <button
-    onClick={() => setLanguage("gr")}
-    className="rounded-lg border px-3 py-1 text-sm"
-  >
-    GR
-  </button>
-
-  <button
-    onClick={() => setLanguage("en")}
-    className="rounded-lg border px-3 py-1 text-sm"
-  >
-    EN
-  </button>
-</div>
-<div className="mt-4">
-  <div id="google_translate_element"></div>
-</div>
-          </div>
+          <Button className="mt-8 rounded-2xl bg-[#1F6B4A] px-8 py-6 text-base text-white hover:bg-[#18573C]">Become part of the pilot</Button>
         </div>
       </section>
     </div>
